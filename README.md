@@ -20,7 +20,7 @@ Output
 ------
 You should get an output like this (click on image to see a larger version):
 
-[![Sample output](http://img.pixady.com/2017/02/129628_hdthumb2.png)](http://img.pixady.com/2017/02/686553_hd.png)
+[![Sample output](http://img.pixady.com/2017/02/467698_hdthumb.png)](http://img.pixady.com/2017/02/686553_hd.png)
 
 Usage
 -----
