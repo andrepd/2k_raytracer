@@ -9,7 +9,7 @@
 
 #define f double
 #define i int
-#define RR return
+#define Y return
 #define O operator
 
 #define P M_PI
@@ -56,7 +56,7 @@ vector S(vector x, double a, double b) {
 	return vector(
 		        cos(b) * x.x + 0            +        sin(b) * x.z ,
 		 sin(a)*sin(b) * x.x + cos(a) * x.y - sin(a)*cos(b) * x.z ,
-	    -cos(a)*sin(b) * x.x + sin(a) * x.y + cos(a)*cos(b) * x.z 
+		-cos(a)*sin(b) * x.x + sin(a) * x.y + cos(a)*cos(b) * x.z 
 	);
 }
 
@@ -74,7 +74,6 @@ vector K = vector(3,2.5,2.5);
 // Shoots a ray from point o with direction d (assumes d is normalized). N is the recursion counter, once it reaches 0 it doesn't recurse anymore (skips checking intersection vs sphere)
 vector S(vector o, vector d, int N) {
 	N--;  // Decrement the recursion counter
-	vector p;
 
 	// Compute first intersection with sphere
 	double t = B(o, d);
@@ -83,7 +82,7 @@ vector S(vector o, vector d, int N) {
 		vector p = o+t*d;
 		vector n = !p;  // Normal
 		
-		// For the ball to appear slightly tilted, we want to rotate the frame of reference where we will make our calculations for the azimuthal and polar angles (to determine if the color of the point is yellow, blue or red inside the star) some angle about the x and y axes. This corresponds to the opposite rotation of the vector p.
+		// For the ball to appear slightly tilted, we want to rotate the frame of reference where we will make our calculations for the azimuthal and polar angles (in order to determine if the color of the point is yellow, blue, or red inside the star) by some angle about the x and y axes. This is equivalent to making the opposite rotation of the vector p.
 		vector q = S(p,P/5,-P/3.5);
 		
 		// Here we calculate whether the point is inside the strip around the equator (blue) or not (yellow). Notice the calculations being done with respect to the rotated p
@@ -91,7 +90,7 @@ vector S(vector o, vector d, int N) {
 			vector(78, 191, 246) :
 			vector(253, 252, 0);
 
-		// Now we calculate whether the point is inside the star at the top. To do this we must know the polar angle (x), and we must do some geometric calculations. To derive these expressions write the straight lines for a 5-pointed star of minimum radius A and maximum radius B in polar coordinates around the origin
+		// Now we calculate whether the point is inside the star at the top. To do this we must know the polar angle (x), and we must do some geometric calculations. To derive these expressions write the straight lines for a 5-pointed star of minimum radius A and maximum radius B around the origin in polar coordinates
 		double x = (atan2(q.y,q.x)+P)/2/P;
 		double A = .16*P, B = .27*P;
 		double a = A*cos(0.2*P)/(A*sin(0.2*P)-B);
@@ -119,7 +118,7 @@ vector S(vector o, vector d, int N) {
 
 	} else {  // If it doesn't hit the sphere, it will hit a wall. Find out which wall
 		vector W[] = {{-3,0,0},{0,9,0},{0,-2,0},{0,0,-1},{8,0,0},{0,0,8}};  // List of walls
-		vector n;
+		vector n,p;
 		double u = 1e9;
 		
 		// Check point of intersection against each wall, if any
@@ -165,8 +164,8 @@ vector S(vector o, vector d, int N) {
 }
 
 int main() {
-	// .ppm header (512x512 image with 2^8 channel depth)
-	printf("P6 1920 1920 255 ");
+	// .ppm header (960x960 image with 2^8 channel depth)
+	printf("P6 960 960 255 ");
 
 	vector a = vector(6,.1,1),  // Position of the camera
 		b = !vector(-1,0,0),  // Direction vector
@@ -176,17 +175,17 @@ int main() {
 	// Focal distance = distance from camera to the front of the ball, makes the ball be in focus
 	double fd = 5.1;
 
-	for (int y=1920; y--;) {  // Height
-		for (int x=1920; x--;) {  // Width
+	for (int y=960; y--;) {  // Height
+		for (int x=960; x--;) {  // Width
 			// Color starts at very dark grey, almost black
 			vector p = {13,13,13};
 			// Cast 64 rays
-			int N = 64*4;
+			int N = 64;
 			for (int r=N; r--;) {
 				// Random delta to sum to starting position, to simulate nonzero aperture (for depth of field blur)
 				vector t = .1*(c*(R()-.5) + d*(R()-.5));
 				// Cast a ray from starting position (pinhole camera position + random delta), in the correct direction for the current pixel (with random deltas for stochastic sampling), and subtract the t/fd factor to keep focal plane in focus. Accumulate onto p
-				p = p + 1./N * S(a+t, !(b + 0.00125/2*(d*(480*2-x+R())-c*(480*2-y+R()))-1./fd*t ), 8);
+				p = p + 1./N * S(a+t, !(b + 0.00125*(d*(480-x+R())-c*(480-y+R()))-1./fd*t ), 8);
 			}
 			// Clamp values to 255
 			if (p.x >= 255) p.x = 255;

@@ -3,7 +3,7 @@
 
 Inspired by the famous "[minimal raytracer challenge][1]" by Paul S. Heckbert, I wrote this program as a challenge to myself to see how much I could cram into a raytracer that was at most 2kB of source code.
 
-`main.cpp` weighs exactly 2000 bytes. `pretty.cpp` is the same code, only properly formatted and commented.
+`ray.cpp` weighs exactly 2000 bytes. `pretty.cpp` is the same code, only properly formatted and commented.
 
 Features
 --------
@@ -24,7 +24,7 @@ You should get an output like this (click on image to see a larger version):
 
 Usage
 -----
-Compile with `g++ -O3 -std=c++11 main.cpp`. File is output to stdout in the PPM file format. Run with `./a.out > img.ppm`. It should complete in less than a minute on a modern machine. Open with a compatible viewer.
+Requires C++11/14. Compile with the GCC 6 or above with `g++-6 -O3 -std=c++14 ray.cpp`. File is output to stdout in the PPM file format. Run with `./a.out > img.ppm`. It should complete in less than a minute on a modern machine. Open with a compatible viewer.
 
 License
 ------
